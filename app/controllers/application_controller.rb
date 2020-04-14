@@ -40,10 +40,14 @@ class ApplicationController < ActionController::Base
 
     raise QuestionsMissingError unless rows.size > 0
 
-    rows.each do |row|
-      gift << c_template % { c: row['CATEGORIA'] }
+    gift = ''
+    gift += "// created with GiftForExport - https://gift.noack.net.ar\r\n"
+    gift += "// developed by daniffig <daniffig@gmail.com> - https://github.com/daniffig\r\n\r\n"
 
-      gift << q_template % {
+    rows.each do |row|
+      gift += c_template % { c: row['CATEGORIA'] }
+
+      gift += q_template % {
         q: row['PREGUNTA'],
         a_a: row['RESPUESTA_A'],
         f_a: row['FEEDBACK_A'],
@@ -55,8 +59,6 @@ class ApplicationController < ActionController::Base
         f_d: row['FEEDBACK_D']
       }
     end
-
-    gift = gift[2..-1].join()
 
     send_data(gift, filename: 'test.gift', type: 'text/plain', disposition: :attachment)
   end
