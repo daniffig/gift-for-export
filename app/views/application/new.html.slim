@@ -1,0 +1,15 @@
+#convert.flex-fill
+  h3.title = 'Cargar hoja de cálculo'
+
+
+  = render 'alerts' if flash.any?
+
+
+  = simple_form_for :test, url: convert_url do |f|
+    = f.error_notification
+
+    .form-group
+      = f.input_field :file, as: :file, accept: '.xlsx'
+
+    .form-group
+      = f.button :submit, 'Convertir', class: 'btn-outline-light btn-lg'

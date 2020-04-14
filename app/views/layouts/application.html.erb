@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GiftForExport</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body class="d-flex flex-column">
+    <header>
+      <h1 class="title">GiftForExport v1</h1>
+    </header>
+    <main class="d-flex flex-column flex-fill align-middle">
+      <%= render 'application/download' %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

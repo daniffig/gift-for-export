@@ -1,0 +1,2 @@
+class WrongFileError < StandardError
+end
