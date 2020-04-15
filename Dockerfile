@@ -20,11 +20,10 @@ COPY Gemfile.lock .
 ARG BUNDLE_PATH
 RUN bundle install $BUNDLEPATH --jobs 4 --retry 3
 
-# RUN yarn install --check-files
-
 ADD . $app
 
 # RUN yarn install --check-files
+RUN yarn install
 
 RUN bundle exec rake assets:precompile
 
