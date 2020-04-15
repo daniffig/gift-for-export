@@ -18,6 +18,7 @@ services:
       - RACK_ENV=production
       - SECREY_KEY_BASE=9e803c5c2d3f977ca3bd09220f008ca2e076d28bfe4b09427e212bab0c14942ba26ee6
       - RAILS_SERVE_STATIC_FILES=1
+      - RAILS_MASTER_KEY=f220b7bbaa4c2d78f085df26bed03647
       - EDITOR=vi
     labels:
       - traefik.enable=true
