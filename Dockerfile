@@ -24,9 +24,9 @@ RUN bundle install $BUNDLEPATH --jobs 4 --retry 3
 
 ADD . $app
 
-RUN yarn install
+# RUN yarn install --check-files
 
-RUN bundle exec rake assets:precompile
+# RUN bundle exec rake assets:precompile
 
 EXPOSE 3000
 

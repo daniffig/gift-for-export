@@ -10,9 +10,10 @@ services:
         RUBY_VERSION: '2.6.5'
         BUNDLER_VERSION: '2.1.4'
         BUNDLE_PATH: '/usr/local/bundle'
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     restart: unless-stopped
     environment:
-#      - BUNDLE_PATH=/usr/local/bundle
+      - BUNDLE_PATH=/usr/local/bundle
       - RAILS_ENV=production
       - RACK_ENV=production
       - SECREY_KEY_BASE=9e803c5c2d3f977ca3bd09220f008ca2e076d28bfe4b09427e212bab0c14942ba26ee6
