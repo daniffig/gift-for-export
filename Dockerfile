@@ -25,7 +25,7 @@ ADD . $app
 # RUN yarn install --check-files
 RUN yarn install
 
-RUN bundle exec rake assets:precompile RAILS_ENV=productio
+RUN bundle exec rake assets:precompile RAILS_ENV=production
 
 EXPOSE 3000
 
