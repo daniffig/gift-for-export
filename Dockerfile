@@ -26,7 +26,7 @@ ADD . $app
 
 # RUN yarn install --check-files
 
-# RUN bundle exec rake assets:precompile
+RUN bundle exec rake assets:precompile
 
 EXPOSE 3000
 
