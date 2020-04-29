@@ -48,15 +48,15 @@ class ApplicationController < ActionController::Base
       gift += c_template % { c: row['CATEGORIA'] }
 
       gift += q_template % {
-        q: row['PREGUNTA'],
-        a_a: row['RESPUESTA_A'],
-        f_a: row['FEEDBACK_A'],
-        a_b: row['RESPUESTA_B'],
-        f_b: row['FEEDBACK_B'],
-        a_c: row['RESPUESTA_C'],
-        f_c: row['FEEDBACK_C'],
-        a_d: row['RESPUESTA_D'],
-        f_d: row['FEEDBACK_D']
+        q: escape_string(row['PREGUNTA']),
+        a_a: escape_string(row['RESPUESTA_A']),
+        f_a: escape_string(row['FEEDBACK_A']),
+        a_b: escape_string(row['RESPUESTA_B']),
+        f_b: escape_string(row['FEEDBACK_B']),
+        a_c: escape_string(row['RESPUESTA_C']),
+        f_c: escape_string(row['FEEDBACK_C']),
+        a_d: escape_string(row['RESPUESTA_D']),
+        f_d: escape_string(row['FEEDBACK_D'])
       }
     end
 
@@ -69,6 +69,18 @@ class ApplicationController < ActionController::Base
 
   def download_example
     send_file(Rails.root.join('private', 'files', 'example.xlsx'), filename: 'GiftForExport - Ejemplo.xlsx', disposition: :inline)
+  end
+
+  private
+
+  def escape_string(string)
+    string.gsub!('~', '\~')
+    string.gsub!('=', '\=')
+    string.gsub!('#', '\#')
+    string.gsub!('{', '\{')
+    string.gsub!('}', '\}')
+
+    string
   end
 end
 
