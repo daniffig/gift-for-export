@@ -5,6 +5,10 @@ class ApplicationController < ActionController::Base
   rescue_from QuestionsMissingError, with: :questions_missing
   rescue_from WrongFileError, with: :wrong_file
 
+  rescue_from EmptyCellError do |e|
+    redirect_to new_url, danger: e.message
+  end
+
   def file_missing
     redirect_to new_url, warning: 'Debe seleccionar un archivo.'
   end
@@ -44,20 +48,24 @@ class ApplicationController < ActionController::Base
     gift += "// created with GiftForExport - https://gift.noack.net.ar\r\n"
     gift += "// developed by daniffig <daniffig@gmail.com> - https://github.com/daniffig\r\n\r\n"
 
+    @row_number = 2
+
     rows.each do |row|
       gift += c_template % { c: row['CATEGORIA'] }
 
       gift += q_template % {
-        q: escape_string(row['PREGUNTA']),
-        a_a: escape_string(row['RESPUESTA_A']),
-        f_a: escape_string(row['FEEDBACK_A']),
-        a_b: escape_string(row['RESPUESTA_B']),
-        f_b: escape_string(row['FEEDBACK_B']),
-        a_c: escape_string(row['RESPUESTA_C']),
-        f_c: escape_string(row['FEEDBACK_C']),
-        a_d: escape_string(row['RESPUESTA_D']),
-        f_d: escape_string(row['FEEDBACK_D'])
+        q: escape_string(row, 'PREGUNTA'),
+        a_a: escape_string(row, 'RESPUESTA_A'),
+        f_a: escape_string(row, 'FEEDBACK_A'),
+        a_b: escape_string(row, 'RESPUESTA_B'),
+        f_b: escape_string(row, 'FEEDBACK_B'),
+        a_c: escape_string(row, 'RESPUESTA_C'),
+        f_c: escape_string(row, 'FEEDBACK_C'),
+        a_d: escape_string(row, 'RESPUESTA_D'),
+        f_d: escape_string(row, 'FEEDBACK_D')
       }
+
+      @row_number += 1
     end
 
     send_data(gift, filename: 'test.gift', type: 'text/plain', disposition: :attachment)
@@ -73,14 +81,37 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def escape_string(string)
-    string.gsub!('~', '\~')
-    string.gsub!('=', '\=')
-    string.gsub!('#', '\#')
-    string.gsub!('{', '\{')
-    string.gsub!('}', '\}')
+  def escape_string(row, key)    
+    string = row[key]
 
-    string
+    begin
+      string.gsub!('~', '\~')
+      string.gsub!('=', '\=')
+      string.gsub!('#', '\#')
+      string.gsub!('{', '\{')
+      string.gsub!('}', '\}')
+  
+      string
+    rescue
+      raise EmptyCellError.new(key_to_column(key), @row_number)
+    end
+  end
+
+  def key_to_column(string)
+    columns = {
+      'CATEGORIA' => 'A',
+      'PREGUNTA' => 'B',
+      'RESPUESTA_A' => 'C',
+      'FEEDBACK_A' => 'D',
+      'RESPUESTA_B' => 'E',
+      'FEEDBACK_B' => 'F',
+      'RESPUESTA_C' => 'G',
+      'FEEDBACK_C' => 'H',
+      'RESPUESTA_D' => 'I',
+      'FEEDBACK_D' => 'J',
+    }
+
+    columns[string]
   end
 end
 
