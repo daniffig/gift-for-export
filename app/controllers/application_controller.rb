@@ -85,12 +85,15 @@ class ApplicationController < ActionController::Base
     string = row[key]
 
     begin
+      string = string.to_s
+      string.gsub!("\n", '')
+      string.gsub!("\r", '')
       string.gsub!('~', '\~')
       string.gsub!('=', '\=')
       string.gsub!('#', '\#')
       string.gsub!('{', '\{')
       string.gsub!('}', '\}')
-  
+
       string
     rescue
       raise EmptyCellError.new(key_to_column(key), @row_number)
