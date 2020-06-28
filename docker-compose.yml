@@ -5,15 +5,9 @@ services:
     container_name: gift.noack.net.ar_web
     build:
       context: .
-      dockerfile: ./Dockerfile
-      args:
-        RUBY_VERSION: '2.6.5'
-        BUNDLER_VERSION: '2.1.4'
-        BUNDLE_PATH: '/usr/local/bundle'
-    # command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
-    # restart: unless-stopped
+      dockerfile: ./Dockerfile.prod
+    restart: unless-stopped
     environment:
-      - BUNDLE_PATH=/usr/local/bundle      
       - RAILS_ENV=production
       - RACK_ENV=production
       - NODE_ENV=production
@@ -21,25 +15,5 @@ services:
       - RAILS_SERVE_STATIC_FILES=1
       - RAILS_MASTER_KEY=f220b7bbaa4c2d78f085df26bed03647
       - EDITOR=vi
-    labels:
-      - traefik.enable=true
-      - traefik.http.middlewares.giftforexport-https.redirectscheme.scheme=https
-      - traefik.http.routers.giftforexport-http.entrypoints=http
-      - traefik.http.routers.giftforexport-http.rule=Host(`gift.noack.net.ar`)
-      - traefik.http.routers.giftforexport-http.middlewares=giftforexport-https@docker
-      - traefik.http.routers.giftforexport.entrypoints=https
-      - traefik.http.routers.giftforexport.rule=Host(`gift.noack.net.ar`)
-      - traefik.http.routers.giftforexport.tls=true
-      - traefik.http.routers.giftforexport.tls.certresolver=heimdallrResolver
-    networks:
-      - heimdallr
-    volumes:
-      - .:/app:cached
-      - gems:/usr/local/bundle
-
-networks:
-  heimdallr:
-    external: true
-
-volumes:
-  gems:
+    ports:
+      - 3000:3000

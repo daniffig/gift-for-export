@@ -1,0 +1,43 @@
+@import "bootstrap/scss/bootstrap";
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  text-align: center;
+}
+
+header {
+  height: 100px;
+  background-color: #333333;
+  color: white;
+}
+
+#download {
+  background-color: #5ab896;
+  height: 240px;
+
+  a {
+    display: block;
+    max-width: 320px;
+    margin: 0 auto 16px auto;
+    padding: 16px 0;
+  }
+}
+
+#convert {
+  background-color: #333333;
+  color: white;
+}
+
+.title {
+  margin: 24px 0 16px 0;
+}
+
+.alert {
+  display: block !important;
+  margin: 16px auto;
+  max-width: 360px;
+}

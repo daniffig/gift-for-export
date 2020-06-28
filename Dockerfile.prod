@@ -1,0 +1,29 @@
+# https://medium.com/magnetis-backstage/how-to-cache-bundle-install-with-docker-7bed453a5800
+
+FROM ruby:2.6.5-alpine
+
+RUN apk update -qq 
+RUN apk add -q build-base git nodejs python tzdata yarn
+
+RUN gem update --system
+RUN gem install bundler
+
+RUN git clone https://github.com/daniffig/gift-for-export.git /usr/src/app -b master
+
+WORKDIR /usr/src/app
+
+# RUN ls
+# RUN env
+
+RUN bundle config set deployment 'true'
+
+RUN bundle install --jobs 4 --retry 3
+
+# https://github.com/rails/webpacker#deployment
+RUN yarn install --production --frozen-lockfile
+
+RUN bundle exec rake webpacker:compile RAILS_ENV=production
+
+EXPOSE 3000
+
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
