@@ -5,7 +5,7 @@ services:
     container_name: gift.noack.net.ar_web
     build:
       context: .
-      dockerfile: ./Dockerfile.prod
+      dockerfile: ./Dockerfile.dev
       args:
         RUBY_VERSION: '2.6.5'
         BUNDLER_VERSION: '2.1.4'

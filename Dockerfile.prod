@@ -2,28 +2,28 @@
 
 FROM ruby:2.6.5-alpine
 
+ENV RAILS_ENV production
+ENV NODE_ENV production
+ENV RAILS_APP /usr/local/app
+
 RUN apk update -qq 
 RUN apk add -q build-base git nodejs python tzdata yarn
 
 RUN gem update --system
-RUN gem install bundler
+RUN gem install bundler:2.1.4
 
-RUN git clone https://github.com/daniffig/gift-for-export.git /usr/src/app -b master
+# https://www.pathname.com/fhs/pub/fhs-2.3.html#USRLOCALLOCALHIERARCHY
+RUN git clone https://github.com/daniffig/gift-for-export.git $RAILS_APP -b master
 
-WORKDIR /usr/src/app
-
-# RUN ls
-# RUN env
-
-RUN bundle config set deployment 'true'
+WORKDIR $RAILS_APP
 
 RUN bundle install --jobs 4 --retry 3
 
 # https://github.com/rails/webpacker#deployment
-RUN yarn install --production --frozen-lockfile
+RUN yarn install --frozen-lockfile
 
-RUN bundle exec rake webpacker:compile RAILS_ENV=production
+RUN bundle exec rake webpacker:compile
 
 EXPOSE 3000
 
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+CMD ["bundle", "exec", "rails", "server"]
