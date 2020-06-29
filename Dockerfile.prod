@@ -20,7 +20,8 @@ WORKDIR $RAILS_APP
 RUN bundle install --jobs 4 --retry 3
 
 # https://github.com/rails/webpacker#deployment
-RUN yarn install --frozen-lockfile
+# RUN yarn install --frozen-lockfile
+RUN yarn install --no-lockfile
 
 RUN bundle exec rake webpacker:compile
 
