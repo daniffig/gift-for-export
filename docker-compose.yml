@@ -1,16 +1,34 @@
-version: '3'
+version: '3.5'
 
 services:
-  web:
-    container_name: gift.noack.net.ar_web
+  web: &web
+    container_name: gift-for-export_web
     build:
       context: .
-      dockerfile: ./Dockerfile.prod
-    restart: unless-stopped
+      dockerfile: ./docker/web/Dockerfile
+      args:
+        RUBY_VERSION: '2.6.5'
+        BUNDLER_VERSION: '2.1.4'
     environment:
       - SECREY_KEY_BASE=9e803c5c2d3f977ca3bd09220f008ca2e076d28bfe4b09427e212bab0c14942ba26ee6
-      - RAILS_SERVE_STATIC_FILES=1
       - RAILS_MASTER_KEY=f220b7bbaa4c2d78f085df26bed03647
       - EDITOR=vi
+      - WEBPACKER_DEV_SERVER_HOST=webpacker
+    volumes:
+      - .:/usr/local/app:cached
+      - gems:/usr/local/bundle
     ports:
       - 3000:3000
+
+  webpacker:
+    container_name: gift-for-export_webpacker
+    build:
+      context: .
+      dockerfile: ./docker/webpacker/Dockerfile
+    ports:
+      - 3035:3035
+    depends_on:
+      - web
+
+volumes:
+  gems:

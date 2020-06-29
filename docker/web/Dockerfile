@@ -12,19 +12,15 @@ RUN gem install bundler:$BUNDLER_VERSION
 
 ENV RAILS_APP /usr/src/app
 RUN mkdir -p $RAILS_APP
+
 WORKDIR $RAILS_APP
 
 COPY Gemfile .
 COPY Gemfile.lock .
 
-# RUN bundle config set path $GEM_HOME
 RUN bundle install --jobs 4 --retry 3
 
 ADD . $RAILS_APP
-
-# https://github.com/rails/webpacker#deployment
-RUN yarn install --production --frozen-lockfile
-RUN bundle exec rake webpacker:compile RAILS_ENV=production
 
 EXPOSE 3000
 
