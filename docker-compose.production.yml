@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+  web:
+    container_name: gift.noack.net.ar_web
+    image: dvorak-dev/gift-for-export
+    build:
+      context: .
+      dockerfile: docker/production/Dockerfile
+    env_file: docker/production/.env
+    restart: unless-stopped
+    ports:
+      - 3000:3000

@@ -1,0 +1,50 @@
+# https://medium.com/magnetis-backstage/how-to-cache-bundle-install-with-docker-7bed453a5800
+
+# builder
+FROM ruby:2.6.5-alpine AS bundler
+
+ENV RAILS_ENV production
+ENV NODE_ENV production
+ENV RAILS_APP /usr/local/app
+
+RUN apk update -qq 
+# RUN apk add -q build-base git nodejs python tzdata yarn
+# RUN apk add -q build-base git tzdata
+RUN apk add -q build-base tzdata
+
+RUN gem update --system --no-document --no-post-install-message
+RUN gem install bundler:2.1.4 --no-document --no-post-install-message
+
+WORKDIR $RAILS_APP
+
+COPY Gemfile .
+COPY Gemfile.lock .
+
+RUN bundle install --jobs 4 --retry 3
+
+ADD . $RAILS_APP
+
+# nodejs
+FROM bundler AS nodejs
+
+RUN apk add -q nodejs python yarn
+# https://github.com/rails/webpacker#deployment
+# RUN yarn install --frozen-lockfile
+# RUN yarn install --no-lockfile --production
+RUN yarn install --frozen-lockfile --production
+
+RUN bundle exec rake webpacker:clobber
+RUN bundle exec rake webpacker:compile
+
+# production
+FROM bundler
+
+COPY --from=nodejs "$RAILS_APP/public/packs" "$RAILS_APP/public/packs"
+
+RUN bundle exec rake tmp:create
+RUN bundle exec rake tmp:clear
+RUN rm -rf ./node_modules
+
+EXPOSE 3000
+
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
