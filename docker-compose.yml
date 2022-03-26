@@ -1,30 +1,40 @@
-version: '3.5'
+version: '3.8'
 
 services:
   web: &web
-    container_name: gift-for-export_web
+    env_file: docker/development/.env
     build:
       context: .
-      dockerfile: ./docker/web/Dockerfile
+      dockerfile: docker/development/web/Dockerfile
       args:
-        RUBY_VERSION: '2.6.5'
-        BUNDLER_VERSION: '2.1.4'
-    environment:
-      - SECREY_KEY_BASE=9e803c5c2d3f977ca3bd09220f008ca2e076d28bfe4b09427e212bab0c14942ba26ee6
-      - RAILS_MASTER_KEY=f220b7bbaa4c2d78f085df26bed03647
-      - EDITOR=vi
-      - WEBPACKER_DEV_SERVER_HOST=webpacker
+        # [Choice] Ruby version: 2, 2.7, 2.7.4
+        RUBY_VERSION: 2.7.4
+        # [Choice] Rails version: 6.1, 6.1.4
+        RAILS_VERSION: 6.0.0
+        # On Linux, you may need to update USER_UID and USER_GID below if not your local UID is not 1000.
+        UID: 1000
+        GID: 1000
+    tty: true
+    stdin_open: true
+    # environment:
+    #   - SECREY_KEY_BASE=9e803c5c2d3f977ca3bd09220f008ca2e076d28bfe4b09427e212bab0c14942ba26ee6
+    #   - RAILS_MASTER_KEY=f220b7bbaa4c2d78f085df26bed03647
+    #   - EDITOR=vi
+    #   - WEBPACKER_DEV_SERVER_HOST=webpacker
     volumes:
       - .:/usr/local/app:cached
       - gems:/usr/local/bundle
+    command: sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     ports:
       - 3000:3000
 
   webpacker:
-    container_name: gift-for-export_webpacker
-    build:
-      context: .
-      dockerfile: ./docker/webpacker/Dockerfile
+    # container_name: gift-for-export_webpacker
+    # build:
+    #   context: .
+    #   dockerfile: ./docker/webpacker/Dockerfile
+    <<: *web
+    command: sh -c "rm -rf public/packs; ./bin/webpack-dev-server --inline --hot true"
     ports:
       - 3035:3035
     depends_on:

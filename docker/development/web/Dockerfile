@@ -1,27 +1,55 @@
-# https://medium.com/magnetis-backstage/how-to-cache-bundle-install-with-docker-7bed453a5800
+ARG RUBY_VERSION=2.7.4
 
-ARG RUBY_VERSION
-FROM ruby:$RUBY_VERSION-alpine
+FROM ruby:${RUBY_VERSION}-alpine
 
-RUN apk update -qq 
-RUN apk add -q build-base nodejs tzdata yarn python
+ARG NODE_VERSION=14.19.0-r0
+ARG RAILS_VERSION=6.0.0
+ARG USR=appuser
+ARG GRP=appgroup
+ARG UID=1000
+ARG GID=1000
+ARG RAILS_APP=/usr/local/app
 
-ARG BUNDLER_VERSION
-RUN gem update --system
-RUN gem install bundler:$BUNDLER_VERSION
+# RUN apk update -qq 
+# RUN apk add -q build-base nodejs tzdata yarn python
+RUN apk update && apk add --no-cache \
+  build-base \
+  git \
+  nodejs~=${NODE_VERSION} \
+  npm \
+  shared-mime-info \
+  sudo \
+  tzdata \
+  yarn
 
-ENV RAILS_APP /usr/src/app
-RUN mkdir -p $RAILS_APP
+RUN addgroup --gid "${GID}" -S "${GRP}"
 
-WORKDIR $RAILS_APP
+# https://linux.die.net/man/8/adduser
+# https://qastack.mx/programming/49955097/how-do-i-add-a-user-when-im-using-alpine-as-a-base-image
+RUN adduser \
+  --home "/home/${USR}" \
+  --gecos "" \
+  --shell "/bin/sh" \
+  --ingroup "${GRP}" \
+  --disabled-password \
+  --uid "${UID}" \
+  "${USR}"
 
-COPY Gemfile .
-COPY Gemfile.lock .
+# https://ostechnix.com/add-delete-and-grant-sudo-privileges-to-users-in-alpine-linux/
+# https://www.codegrepper.com/code-examples/shell/alpine+docker+add+user+and+group
+# https://wiki.alpinelinux.org/wiki/Setting_up_a_new_user#adduser
 
-RUN bundle install --jobs 4 --retry 3
+RUN echo "${USR} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers
+RUN mkdir -p ${RAILS_APP} && chown "${USR}:${GRP}" ${RAILS_APP} -R
 
-ADD . $RAILS_APP
+USER ${UID}:${GID}
+# COPY .railsrc /home/${USR}
 
-EXPOSE 3000
+RUN echo 'gem: --no-document' >> ~/.gemrc
 
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+RUN gem install rails -v "~> ${RAILS_VERSION}"
+
+# dev tools
+RUN gem install ruby-debug-ide debase solargraph
+
+WORKDIR ${RAILS_APP}
