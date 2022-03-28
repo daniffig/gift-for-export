@@ -21,6 +21,7 @@ jobs:
 
     - name: Build the Docker image
       # run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME:$(date +%s)
+      # IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
       run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME
 
     - name: Log into GitHub Container Registry
@@ -28,5 +29,5 @@ jobs:
 
     - name: Push image to GitHub Container Registry
       run: |
-        IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
+        IMAGE_ID=$REGISTRY/$IMAGE_NAME
         docker push $IMAGE_ID
