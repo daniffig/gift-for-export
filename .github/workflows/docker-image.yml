@@ -23,10 +23,7 @@ jobs:
       # run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME:$(date +%s)
       # IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
       # run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME:${{ github.run_id }}
-      run: docker build . --file docker/production/web/Dockerfile --tag ghcr.io/daniffig/gift-for-export:latest
-    
-    - name: Run image
-      run: docker run ghcr.io/daniffig/gift-for-export:latest
+      run: docker build . --file docker/production/web/Dockerfile --tag ghcr.io/daniffig/gift-for-export:latest    
 
     - name: Log into GitHub Container Registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
