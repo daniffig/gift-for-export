@@ -19,26 +19,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: try env
-      run: env
+    - name: Build the Docker image
+      # run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME:$(date +%s)
+      # IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
+      # run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME:${{ github.run_id }}
+      run: docker build . --file docker/production/web/Dockerfile --tag miimagen
 
-  another-job:
-    runs-on: ubuntu-latest
+    - name: Log into GitHub Container Registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
-    steps:
-    - name: try me!
-      run: env | grep 'GITHUB_'
-
-
-    # - name: Build the Docker image
-    #   # run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME:$(date +%s)
-    #   # IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
-    #   run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME:${{ github.run_id }}
-
-    # - name: Log into GitHub Container Registry
-    #   run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
-
-    # - name: Push image to GitHub Container Registry
-    #   run: |
-    #     IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
-    #     docker push $IMAGE_ID
+    - name: Push image to GitHub Container Registry
+      run: |
+        IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
+        docker push miimagen
