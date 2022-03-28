@@ -22,12 +22,12 @@ jobs:
     - name: Build the Docker image
       # run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME:$(date +%s)
       # IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
-      run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME
+      run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME:${{ github.run_id }}
 
     - name: Log into GitHub Container Registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Push image to GitHub Container Registry
       run: |
-        IMAGE_ID=$REGISTRY/$IMAGE_NAME
+        IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
         docker push $IMAGE_ID
