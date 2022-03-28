@@ -7,15 +7,12 @@ on:
     branches: [ master ]
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: "ghcr.io/${{ github.repository }}"
+  VERSION: "1.1.3"
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
 
@@ -23,7 +20,7 @@ jobs:
       # run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME:$(date +%s)
       # IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
       # run: docker build . --file docker/production/web/Dockerfile --tag $IMAGE_NAME:${{ github.run_id }}
-      run: docker build . --file docker/production/web/Dockerfile --tag ghcr.io/daniffig/gift-for-export:latest    
+      run: docker build --file docker/production/web/Dockerfile -t $IMAGE_NAME:$VERSION -t $IMAGE_NAME:latest .
 
     - name: Log into GitHub Container Registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
@@ -31,4 +28,4 @@ jobs:
     - name: Push image to GitHub Container Registry
       run: |
         IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
-        docker push ghcr.io/daniffig/gift-for-export:latest
+        docker push $IMAGE_NAME --all-tags
