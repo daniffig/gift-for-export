@@ -34,4 +34,4 @@ jobs:
     - name: Push image to GitHub Container Registry
       run: |
         IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
-        docker push ghrc.io/daniffig/gift-for-export:12
+        docker push daniffig/gift-for-export:12
