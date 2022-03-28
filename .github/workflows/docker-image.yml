@@ -27,5 +27,5 @@ jobs:
 
     - name: Push image to GitHub Container Registry
       run: |
-        IMAGE_ID=$REGISTRY/${{ github.repository_owner }}/$IMAGE_NAME:${{ github.run_id }}
+        IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
         docker push $IMAGE_ID
