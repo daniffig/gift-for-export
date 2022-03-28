@@ -1,15 +1,15 @@
-ARG RUBY_VERSION=2.7.4
+ARG RUBY_VERSION="2.7.4"
 
 FROM ruby:${RUBY_VERSION}-alpine AS builder
 
-ARG NODE_VERSION=14.19.0-r0
+ARG NODE_VERSION="14"
 
-ENV BUNDLER_VERSION=2.2.16 \
-    NODE_ENV=production \
-    RAILS_APP=/usr/local/app \
-    RAILS_ENV=production \
-    RACK_ENV=production \
-    SECRET_KEY_BASE=foobar
+ENV BUNDLER_VERSION="2.2.16" \
+    NODE_ENV="production" \
+    RAILS_APP="/usr/local/app" \
+    RAILS_ENV="production" \
+    RACK_ENV="production" \
+    SECRET_KEY_BASE="build"
 
 WORKDIR ${RAILS_APP}
 
@@ -20,6 +20,7 @@ RUN apk update -qq && \
       build-base \
       git \
       nodejs~=${NODE_VERSION} \
+      python2 \
       shared-mime-info \
       tzdata \
       yarn && \
@@ -49,7 +50,8 @@ ARG GID=1000
 
 ENV RAILS_APP="/usr/local/app" \
     RAILS_ENV="production" \
-    RAILS_SERVE_STATIC_FILES=1
+    RAILS_SERVE_STATIC_FILES=1 \
+    SECRET_KEY_BASE="production"
 
 RUN addgroup --gid "${GID}" -S "${GRP}"
 
@@ -76,20 +78,15 @@ USER ${UID}:${GID}
 WORKDIR ${RAILS_APP}
 
 COPY --from=builder /usr/lib /usr/lib
-# COPY --from=builder /usr/share/fonts /usr/share/fonts
 COPY --from=builder /usr/share/mime /usr/share/mime
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 
-# COPY --from=builder ${RAILS_APP} ${RAILS_APP}
-
 COPY --from=builder ${RAILS_APP}/app ${RAILS_APP}/app
 COPY --from=builder ${RAILS_APP}/bin ${RAILS_APP}/bin
 COPY --from=builder ${RAILS_APP}/config ${RAILS_APP}/config
-# COPY --from=builder ${RAILS_APP}/db ${RAILS_APP}/db
 COPY --from=builder ${RAILS_APP}/lib ${RAILS_APP}/lib
 COPY --from=builder ${RAILS_APP}/public ${RAILS_APP}/public
-# COPY --from=builder ${RAILS_APP}/storage ${RAILS_APP}/storage
 COPY --from=builder ${RAILS_APP}/vendor ${RAILS_APP}/vendor
 COPY --from=builder ${RAILS_APP}/Gemfile ${RAILS_APP}/Gemfile.lock ${RAILS_APP}/config.ru ${RAILS_APP}/Rakefile ${RAILS_APP}/
 

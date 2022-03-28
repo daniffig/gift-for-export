@@ -9,9 +9,9 @@ services:
       dockerfile: docker/production/web/Dockerfile
       args:
         # [Choice] Ruby version: 2, 2.7, 2.7.4
-        RUBY_VERSION: 2.7.4
+        RUBY_VERSION: "2.7.4"
         # [Choice] Node.js version: lts, 16, 14, 12, 10
-        NODE_VERSION: "14.19.0-r0"
+        NODE_VERSION: "14"
         # On Linux, you may need to update USER_UID and USER_GID below if not your local UID is not 1000.
         UID: 1000
         GID: 1000

@@ -1,14 +1,14 @@
-ARG RUBY_VERSION=2.7.4
+ARG RUBY_VERSION="2.7.4"
 
 FROM ruby:${RUBY_VERSION}-alpine
 
-ARG NODE_VERSION=14.19.0-r0
-ARG RAILS_VERSION=6.0.0
-ARG USR=appuser
-ARG GRP=appgroup
+ARG NODE_VERSION="14"
+ARG RAILS_VERSION="6.0.0"
+ARG USR="appuser"
+ARG GRP="appgroup"
 ARG UID=1000
 ARG GID=1000
-ARG RAILS_APP=/usr/local/app
+ARG RAILS_APP="/usr/local/app"
 
 # RUN apk update -qq 
 # RUN apk add -q build-base nodejs tzdata yarn python
