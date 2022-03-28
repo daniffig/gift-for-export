@@ -47,7 +47,9 @@ ARG GRP=appgroup
 ARG UID=1000
 ARG GID=1000
 
-ENV RAILS_APP=/usr/local/app
+ENV RAILS_APP="/usr/local/app" \
+    RAILS_ENV="production" \
+    RAILS_SERVE_STATIC_FILES=1
 
 RUN addgroup --gid "${GID}" -S "${GRP}"
 
