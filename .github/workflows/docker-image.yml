@@ -27,6 +27,8 @@ jobs:
   #       IMAGE_ID=$REGISTRY/$IMAGE_NAME:${{ github.run_id }}
   #       docker push $IMAGE_NAME --all-tags
 
+  # https://dev.to/cloudx/multi-arch-docker-images-the-easy-way-with-github-actions-4k54
+
   build-rpi:
     runs-on: ubuntu-latest
     steps:
@@ -52,7 +54,7 @@ jobs:
         context: .
         platforms: linux/amd64,linux/arm/v7
         file: docker/production/web/Dockerfile
-        tags: ${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+        # tags: ${{ env.IMAGE_NAME }}:${{ env.VERSION }}
         push: true
 
 
