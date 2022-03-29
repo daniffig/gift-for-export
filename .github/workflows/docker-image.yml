@@ -57,7 +57,7 @@ jobs:
           linux/arm/v7
         file: docker/production/web/Dockerfile
         tags: |
-          $IMAGE_NAME:$VERSION
-          $IMAGE_NAME:latest
+          ${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          ${{ env.IMAGE_NAME }}:latest
 
 
