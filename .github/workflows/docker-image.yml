@@ -52,7 +52,7 @@ jobs:
         context: .
         platforms: linux/amd64,linux/arm/v7
         file: docker/production/web/Dockerfile
-        tags: ${{ IMAGE_NAME }}:${{ VERSION }},${{ IMAGE_NAME }}:latest
+        tags: "$IMAGE_NAME:$VERSION,$IMAGE_NAME:latest"
         push: true
 
 
