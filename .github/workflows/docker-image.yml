@@ -54,7 +54,7 @@ jobs:
       with:
         images: |
           $IMAGE_NAME
-        tags:
+        tags: |
           type=schedule
           type=ref,event=branch
           type=ref,event=pr
