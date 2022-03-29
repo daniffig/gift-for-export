@@ -77,7 +77,7 @@ USER ${UID}:${GID}
 
 WORKDIR ${RAILS_APP}
 
-COPY --from=builder /usr/lib /usr/lib
+# COPY --from=builder /usr/lib /usr/lib
 COPY --from=builder /usr/share/mime /usr/share/mime
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /usr/local/bundle /usr/local/bundle
