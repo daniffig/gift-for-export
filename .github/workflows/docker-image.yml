@@ -47,6 +47,21 @@ jobs:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Docker meta
+      id: meta1234
+      uses: docker/metadata-action@v3
+      with:
+        images: |
+          $IMAGE_NAME
+        tags:
+          type=schedule
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+          type=sha
 
     - name: Build and push
       uses: docker/build-push-action@v2
@@ -54,7 +69,7 @@ jobs:
         context: .
         platforms: linux/amd64
         file: docker/production/web/Dockerfile
-        tags: ${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-        push: true
+        tags: ${{ steps.meta1234.outputs.tags }}
+        labels: ${{ steps.meta1234.outputs.labels }}
 
 
