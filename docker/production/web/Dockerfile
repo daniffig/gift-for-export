@@ -31,7 +31,7 @@ RUN apk update -qq && \
     bundle config set jobs 8 && \
     bundle config set retry 5 && \
     bundle config set without development:test:ubuntu && \
-    bundle install && \
+    bundle install --clean --deployment && \
     rm -rf /usr/local/bundle/cache/*.gem && \
     find /usr/local/bundle/gems/ -name "*.c" -delete && \
     find /usr/local/bundle/gems/ -name "*.o" -delete && \
